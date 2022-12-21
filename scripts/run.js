@@ -1,4 +1,9 @@
 const main = async () => {
+
+    // para fazer deploy na blockchain, precisamos de endereços de carteiras, hardhar faz isso automaticamente, 
+    // mas aqui, nós pegamos a carteira do dono do contrato e uma carteira de uma pessoa aleatória
+    const[owner, randomPerson] = await hre.ethers.getSigners()
+
     //Esse código vai compilar nosso contrato e gerar as pastas necessárias que precisamos para trabalhar
     // com nosso contrato depois da pasta artifacts
     const waveContractFactory = await hre.ethers.getContractFactory("WavePortal");
@@ -13,6 +18,22 @@ const main = async () => {
     //esse código vai nos dá o endereço do contrato enviado, esse endereço é responsável
     // por achar nosso contrato na blockchain
     console.log("Contract deployed to:", waveContract.address);
+
+    console.log('Contract deployed by:', owner.address);
+
+    //Aqui temos que chamar manualmente nossas funções do contrato
+    await waveContract.getTotalText();
+
+    const WaveTxn = await waveContract.Text();
+    await WaveTxn.wait();
+
+    await waveContract.getTotalText();
+
+    // Aqui permite mais de uma pessoas a ter as "waves"
+    const secontWaveTxn =  await waveContract.connect(randomPerson).Text();
+    await secontWaveTxn.wait()
+
+    await waveContract.getTotalText()
   };
 
   const runMain = async () => {
