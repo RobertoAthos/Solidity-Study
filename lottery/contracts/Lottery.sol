@@ -4,7 +4,7 @@ contract Lottery {
     address public manager;
     address[] public players;
     
-    function lottery() public {
+    function Lottery() public {
         manager = msg.sender;
     }
     
@@ -19,13 +19,13 @@ contract Lottery {
         ));
     }
     
-      function pickWinner() public isManager {
+    function pickWinner() public restricted {
         uint index = random() % players.length;
-        players[index].transfer(address(this).balance);
+         players[index].transfer(address(this).balance);
         players = new address[](0);
     }
-
-    modifier isManager() {
+    
+    modifier restricted() {
         require(msg.sender == manager);
         _;
     }
